@@ -1,9 +1,10 @@
 package main
 
 import (
-	"restapi-service/internal/config"
 	"log/slog"
 	"os"
+	"restapi-service/internal/config"
+	"restapi-service/internal/storage/sqlite"
 )
 
 const (
@@ -17,6 +18,14 @@ func main() {
 
 	log := setupLogger(cfg.Env)
 	log.Info("starting restapi-service")
+
+	storage, err := sqlite.New(cfg.StoragePath)
+	if err != nil {
+		log.Error("failed to init storage")
+		os.Exit(1)
+	}
+
+	_ = storage
 }
 
 func setupLogger(env string) *slog.Logger {
